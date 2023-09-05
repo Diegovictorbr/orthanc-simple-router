@@ -1,0 +1,69 @@
+{
+  // -------------------- COMMON CONFIGURATION --------------------
+  "HttpPort": 80,
+  "HttpServerEnabled": true,
+  "OrthancExplorerEnabled": false,
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": true,
+  "StoreDicom": true,
+  "DefaultEncoding": "Utf8",
+  "StorageDirectory": "/root/orthanc-storage",
+  "IndexDirectory": "/root/orthanc-index",
+  "TemporaryDirectory": "/root/orthanc-cache",
+  "MallocArenaMax": 5,
+  "SaveJobs": false,
+  "Plugins": [
+    "/usr/local/share/orthanc/plugins/"
+  ],
+  "PythonScript": "/root/conf/script.py",
+  // -------------------- COMMON CONFIGURATION --------------------
+  "ConcurrentJobs": 20,
+  "RegisteredUsers": {
+    "###ORTHANC_ADMIN###": "###ORTHANC_ADMIN_PASSWORD###"
+  },
+  "DicomModalities": {
+    "GENERAL": [
+      "GENERAL",
+      "general-writer",
+      4242
+    ],
+    "XRAY": [
+      "XRAY",
+      "xray-writer",
+      4242
+    ]
+  },
+  "DicomAet": "###DICOM_AET###",
+  "DicomPort": 4242,
+  "DicomServerEnabled": true,
+  "OverwriteInstances": false,
+  "DicomCheckCalledAet": false,
+  "DicomAlwaysAllowFindWorklist": false,
+  "DicomAlwaysAllowFind": false,
+  "DicomAlwaysAllowGet": false,
+  "DicomAlwaysAllowEcho": true,
+  "DicomAlwaysAllowStore": true,
+  "DicomCheckModalityHost": false,
+  "HttpCompressionEnabled": false,
+  "DeflatedTransferSyntaxAccepted": true,
+  "JpegTransferSyntaxAccepted": true,
+  "Jpeg2000TransferSyntaxAccepted": true,
+  "JpegLosslessTransferSyntaxAccepted": true,
+  "JpipTransferSyntaxAccepted": true,
+  "Mpeg2TransferSyntaxAccepted": true,
+  "RleTransferSyntaxAccepted": true,
+  "UnknownSopClassAccepted": false,
+  "StrictAetComparison": false,
+  "StoreMD5ForAttachments": true,
+  "LogExportedResources": false,
+  "QueryRetrieveSize": 10,
+  "CaseSensitivePN": false,
+  "StorageAccessOnFind": "Never",
+  "JobsHistorySize": 50,
+  "LimitJobs": 20,
+  "MediaArchiveSize": 20,
+  "DicomScpTimeout": 180,
+  "DicomScuTimeout": 20,
+  "DicomThreadsCount": 8,
+  "MaximumPduLength": 32768
+}

@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  general-writer:
+    volumes:
+      - ./volumes/general-writer:/root/orthanc-storage
+  
+  xray-writer:
+    volumes:
+      - ./volumes/xray-writer:/root/orthanc-storage
+
+  nginx:
+    build:
+      args:
+        - NGINX_CONF_FILE=nginx.conf
+    ports:
+      - 80:80
