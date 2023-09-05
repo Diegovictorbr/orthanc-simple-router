@@ -1,7 +1,7 @@
 # Simple Router
 A demonstration of an architecture containing multiple containerized Orthanc instances dedicated to a specific end. 
 
-In this project, we leverage [Orthanc's routing functionality](https://github.com/amirkogithub/orthanc/blob/master/Resources/Samples/Python/HighPerformanceAutoRouting.py) by using Docker Compose to define multiple writers.
+In this project, [Orthanc's routing functionality](https://github.com/amirkogithub/orthanc/blob/master/Resources/Samples/Python/HighPerformanceAutoRouting.py) is leveraged by using Docker Compose to define multiple writers.
 
 In this simplified architecture, there are three containers:
 
