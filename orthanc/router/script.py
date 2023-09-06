@@ -7,7 +7,7 @@ import functools
 import requests
 
 GLOBAL_LOCK = threading.Lock() # Lock global para as threads
-ORTHANC_ROOT_URL = 'http://nginx/orthanc-router'
+ORTHANC_ROOT_URL = 'http://orthanc-router'
 
 requests.packages.urllib3.disable_warnings()
 httpClient = requests.Session()
@@ -95,8 +95,6 @@ def sendInstances(instances, modality):
             groupedInstances[instance.get('remoteAET')] = [instance.get('publicId')]
 
     for key in groupedInstances.keys():
-        orthanc.LogWarning(f"Sending {len(groupedInstances.get(key))} instances from {key} to modality: {modality}")
-        
         # 2 - Send grouped instances all at once
         body = { "Resources": groupedInstances.get(key), "LocalAet": key }
 
@@ -104,10 +102,7 @@ def sendInstances(instances, modality):
 
         try:
             httpClient.post(f"{ORTHANC_ROOT_URL}/modalities/{modality}/store", json = body, timeout = None) # No timeout: wait until the writer instance finishes
-            
             orthanc.LogWarning(f"{len(groupedInstances.get(key))} instances sent in {time.time() - start} seconds")
-            orthanc.LogWarning(f"{ORTHANC_ROOT_URL}/modalities/{modality}/store")
-
         except Exception as ex:
             orthanc.LogError(f"ERROR WHILE TRYING TO SEND INSTANCES: {groupedInstances.get(key)}")
             orthanc.LogError(f"{ex}")
@@ -116,7 +111,6 @@ def sendInstances(instances, modality):
             try:
                 start = time.time()
                 httpClient.post(f"{ORTHANC_ROOT_URL}/tools/bulk-delete", json = body)
-                orthanc.LogWarning(f"{len(groupedInstances.get(key))} instances removed in {time.time() - start} seconds")
             except Exception as ex:
                 orthanc.LogError(f"ERROR WHILE TRYING TO DELETE INSTANCES: {groupedInstances.get(key)}")
                 orthanc.LogError(f"{ex}")

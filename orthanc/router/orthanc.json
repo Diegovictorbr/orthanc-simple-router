@@ -24,7 +24,7 @@
   "DicomModalities": {
     "GENERAL": [
       "GENERAL",
-      "general-writer",
+      "simple-general-writer",
       4242
     ],
     "XRAY": [

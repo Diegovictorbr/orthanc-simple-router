@@ -7,11 +7,11 @@ function router() {
 }
 
 function writers() {
-    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d --force-recreate --no-deps general-writer xray-writer
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d --force-recreate --no-deps simple-general-writer xray-writer
 }
 
-function nginx() {
-    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d --force-recreate --no-deps nginx
+function db() {
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d --force-recreate --no-deps simple-router-db
 }
 
 function all() {

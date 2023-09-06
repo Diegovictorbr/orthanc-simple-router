@@ -15,7 +15,20 @@
     "/usr/local/share/orthanc/plugins/"
   ],
   "PythonScript": "/root/conf/script.py",
-  
+  "MySQL": {
+    "EnableSsl": false,
+    "EnableIndex": true,
+    "EnableStorage": false,
+    "Host": "simple-router-db",
+    "Port": 3306,
+    "Database": "otc",
+    "Username": "otc",
+    "Password": "otc",
+    "Lock": false,
+    "MaximumConnectionRetries": 5,
+    "ConnectionRetryInterval": 5,
+    "IndexConnectionsCount": 2
+  },
   // -------------------- COMMON CONFIGURATION --------------------
   "ConcurrentJobs": 20,
   "RegisteredUsers": {

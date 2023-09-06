@@ -4,8 +4,8 @@ set -e
 cd
 
 URL=https://lsb.orthanc-server.com
-VERSION_MYSQL=4.3
-VERSION_PYTHON=4.0
+VERSION_MYSQL=5.1
+VERSION_PYTHON=4.1
 
 wget ${URL}/plugin-mysql/${VERSION_MYSQL}/libOrthancMySQLIndex.so
 wget ${URL}/plugin-mysql/${VERSION_MYSQL}/libOrthancMySQLStorage.so

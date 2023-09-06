@@ -6,7 +6,7 @@ import functools
 import requests
 
 CONFIGURATION = json.loads(orthanc.GetConfiguration()) # orthanc.json attributes
-ORTHANC_ROOT_URL = 'http://nginx/###ORIGIN###'
+ORTHANC_ROOT_URL = 'http://###ORIGIN###'
 
 requests.packages.urllib3.disable_warnings()
 httpClient = requests.Session()
@@ -36,6 +36,7 @@ def onStableStudy(resourceId):
     processingStudies.pop(studyInstanceUID, None)
 
     orthanc.LogWarning(f"STABLE. ELAPSED TIME: {delta}")
+    orthanc.LogWarning(f"STUDY DATA: {study}")
 
 def onChange(changeType, level, resourceId):
     if changeType == orthanc.ChangeType.NEW_STUDY:
