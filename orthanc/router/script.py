@@ -98,18 +98,14 @@ def sendInstances(instances, modality):
         # 2 - Send grouped instances all at once
         body = { "Resources": groupedInstances.get(key), "LocalAet": key }
 
-        start = time.time()
-
         try:
             httpClient.post(f"{ORTHANC_ROOT_URL}/modalities/{modality}/store", json = body, timeout = None) # No timeout: wait until the writer instance finishes
-            orthanc.LogWarning(f"{len(groupedInstances.get(key))} instances sent in {time.time() - start} seconds")
         except Exception as ex:
             orthanc.LogError(f"ERROR WHILE TRYING TO SEND INSTANCES: {groupedInstances.get(key)}")
             orthanc.LogError(f"{ex}")
 
         finally:
             try:
-                start = time.time()
                 httpClient.post(f"{ORTHANC_ROOT_URL}/tools/bulk-delete", json = body)
             except Exception as ex:
                 orthanc.LogError(f"ERROR WHILE TRYING TO DELETE INSTANCES: {groupedInstances.get(key)}")
