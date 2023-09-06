@@ -73,17 +73,24 @@ def routeInstances():
                 else:
                     generalInstances.append(instance)
 
+            sendThreads = []
+
             # TODO: define routing conditions as configuration inside orthanc.json?
             if len(generalInstances) > 0:
-                sendInstances(generalInstances, 'GENERAL')
+                sendThreads.append(threading.Thread(None, sendInstances, args = (generalInstances, 'GENERAL')))
 
             # TODO: define routing conditions as configuration inside orthanc.json?
             if len(xrayInstances) > 0:
-                sendInstances(xrayInstances, 'XRAY')
+                sendThreads.append(threading.Thread(None, sendInstances, args = (xrayInstances, 'XRAY')))
+
+            for sendThread in sendThreads:
+                sendThread.start()
+
+            for sendThread in sendThreads:
+                sendThread.join()
 
             GLOBAL_LOCK.release()
 
-# TODO: run function async
 def sendInstances(instances, modality):
     groupedInstances = {}
 
