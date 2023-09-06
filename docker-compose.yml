@@ -12,7 +12,7 @@ services:
         - ORTHANC_ADMIN=$ORTHANC_ADMIN
         - ORTHANC_ADMIN_PASSWORD=$ORTHANC_ADMIN_PASSWORD
     ports:
-      - 4242:4242
+      - 4243:4242
     depends_on:
       - simple-general-writer
       - xray-writer
