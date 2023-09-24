@@ -3,7 +3,7 @@ A demonstration of an architecture containing multiple containerized Orthanc ins
 
 In this project, [Orthanc's routing functionality](https://github.com/amirkogithub/orthanc/blob/master/Resources/Samples/Python/HighPerformanceAutoRouting.py) is leveraged by using Docker Compose to define multiple writers.
 
-In this simplified architecture, there are several containers:
+The architecture consists of several containers:
 
 - Router - An Orthanc container that forwards study instances based on its **modality** attribute.
 - Generic writer - The writer container that stores all modalities in the filesystem
