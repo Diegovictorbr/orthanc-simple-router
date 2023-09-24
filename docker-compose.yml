@@ -100,9 +100,52 @@ services:
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  
+  backup-writer:
+    container_name: backup-writer
+    command: [ "/root/conf/" ]
+    hostname: backup-writer
+    build:
+      context: ./orthanc/writer
+      dockerfile: ./Dockerfile
+      args:
+        - DICOM_AET=BACKUP
+        - ORTHANC_ADMIN=$ORTHANC_ADMIN
+        - ORTHANC_ADMIN_PASSWORD=$ORTHANC_ADMIN_PASSWORD
+        - ORTHANC_USER=$ORTHANC_USER
+        - ORTHANC_USER_PASSWORD=$ORTHANC_USER_PASSWORD
+        - ORTHANC_DATABASE=backup-db
+    ports:
+      - 8092:80
+    volumes:
+      - backup-storage:/root/orthanc-storage:Z
+    restart: unless-stopped
+    depends_on:
+      - router
+      - backup-db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  backup-db:
+    container_name: backup-db
+    image: mysql:5.7
+    command: ["mysqld", "--default-authentication-plugin=mysql_native_password", "--log-bin-trust-function-creators=1"]
+    environment:
+      MYSQL_DATABASE: 'otc'
+      MYSQL_USER: 'otc'
+      MYSQL_PASSWORD: 'otc'
+      MYSQL_ROOT_PASSWORD: 'otc'
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - backup-index:/var/lib/mysql:Z
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   generic-storage:
-  xray-storage:
   generic-index:
+  xray-storage:
   xray-index:
+  backup-storage:
+  backup-index:

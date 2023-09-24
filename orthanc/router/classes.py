@@ -15,6 +15,9 @@ class RoutingCriteria:
         self.routableAttribute = routableAttribute
         self.operator = operator
         self.value = value
+    
+    def __str__(self):
+        return f"{self.routableAttribute}|{self.operator}|{self.value}"
 
 class Candidate:
     def __init__(self, aet, host, port, routingCriteria: RoutingCriteria) -> None:

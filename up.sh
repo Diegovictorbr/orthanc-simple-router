@@ -10,6 +10,10 @@ function writers() {
     docker-compose -f docker-compose.yml up --build -d --force-recreate --no-deps generic-writer xray-writer
 }
 
+function backup() {
+    docker-compose -f docker-compose.yml up --build -d --force-recreate --no-deps backup-writer
+}
+
 function db() {
     docker-compose -f docker-compose.yml up --build -d --force-recreate --no-deps generic-db xray-db
 }

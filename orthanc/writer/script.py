@@ -42,18 +42,20 @@ def onStableStudy(resourceId):
     logging.info(f"TOTAL TIME - {totalTime}")
 
 def candidate():
-        operator = ROUTING_CRITERIA.split('|')[1]
-        value = ROUTING_CRITERIA.split('|')[2]
         body = {
             "aet": WRITER_AET,
             "host": ORIGIN,
-            "port": 4242,
-            "routingCriteria": {
+            "port": 4242
+        }
+        
+        if ROUTING_CRITERIA:
+            operator = ROUTING_CRITERIA.split('|')[1]
+            value = ROUTING_CRITERIA.split('|')[2]
+            body["routingCriteria"] = {
                 "routableAttribute": ROUTING_CRITERIA.split('|')[0],
                 "operator": ROUTING_CRITERIA.split('|')[1],
                 "value": value.split(',') if operator in ['IN', 'NOT_IN'] else value
             }
-        }
 
         try:
             httpClient.post(f"{ROUTER_URL}/candidates", json = body)

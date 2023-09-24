@@ -97,6 +97,10 @@ def routeInstances():
 
         for instance in instances:
             for candidate in candidates:
+                if not candidate.routingCriteria:
+                    determine(candidate, instance)
+                    continue
+
                 instanceValue = instance.get(candidate.routingCriteria.routableAttribute.value)
 
                 if candidate.routingCriteria.operator == classes.Operator.IN:
@@ -116,7 +120,7 @@ def routeInstances():
 
         for key in candidatesInstances.keys():
             candidateInstances = candidatesInstances[key]
-            sendThreads.append(threading.Thread(None, sendInstances, args = (candidateInstances, key)))
+            sendThreads.append(threading.Thread(target = sendInstances, args = (candidateInstances, key)))
         
         for sendThread in sendThreads:
             sendThread.start()
@@ -155,13 +159,16 @@ def sendInstances(instances, modality):
 
 def postCandidates(output, uri, **request):
     requestBody = json.loads(request['body'])
-    routingCriteria = classes.RoutingCriteria(
-        classes.RoutableAttribute[requestBody.get('routingCriteria').get('routableAttribute')], 
-        classes.Operator[requestBody.get('routingCriteria').get('operator')], 
-        requestBody.get('routingCriteria').get('value')
-    )
-    candidate = classes.Candidate(requestBody.get('aet'), requestBody.get('host'), requestBody.get('port'), routingCriteria)
+    routingCriteria = None
 
+    if requestBody.get('routingCriteria'):
+        routingCriteria = classes.RoutingCriteria(
+            classes.RoutableAttribute[requestBody.get('routingCriteria').get('routableAttribute')], 
+            classes.Operator[requestBody.get('routingCriteria').get('operator')], 
+            requestBody.get('routingCriteria').get('value')
+        )
+
+    candidate = classes.Candidate(requestBody.get('aet'), requestBody.get('host'), requestBody.get('port'), routingCriteria)
     httpClient.put(f"{ROUTER_URL}/modalities/{requestBody.get('aet')}", json = {
         "AET": candidate.aet,
         "Host": candidate.host,
@@ -169,7 +176,7 @@ def postCandidates(output, uri, **request):
     })
     candidates.append(candidate)
 
-    logging.info(f"REGISTERED CANDIDATE {candidate.host} at {datetime.now(timezone.utc).isoformat()} UTC")
+    logging.info(f"REGISTERED CANDIDATE {candidate.host} WITH ROUTING CRITERIA: {candidate.routingCriteria}")
     output.AnswerBuffer('ok', 'text/plain')
 
     # TODO: pendingStudies attribute to control logic with incoming studies
