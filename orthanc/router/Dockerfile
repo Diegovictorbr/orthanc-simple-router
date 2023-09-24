@@ -7,7 +7,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python3.7 libpython3.7 pyt
 
 RUN python3.7 -m pip install pydicom requests
 
-COPY download-plugins.sh orthanc.json script.py /root/conf/
+COPY download-plugins.sh orthanc.json script.py classes.py /root/conf/
 RUN mkdir -p /root/orthanc-index/ /root/orthanc-cache/
 RUN chmod 777 /root/conf/download-plugins.sh && /root/conf/download-plugins.sh && rm /root/conf/download-plugins.sh
 
@@ -20,6 +20,3 @@ RUN sed -i "s|###ORTHANC_ADMIN###|$ORTHANC_ADMIN|g" /root/conf/script.py && \
     sed -i "s|###DICOM_AET###|$DICOM_AET|g" /root/conf/orthanc.json && \
     sed -i "s|###ORTHANC_ADMIN###|$ORTHANC_ADMIN|g" /root/conf/orthanc.json && \
     sed -i "s|###ORTHANC_ADMIN_PASSWORD###|$ORTHANC_ADMIN_PASSWORD|g" /root/conf/orthanc.json
-
-EXPOSE 4242
-ENTRYPOINT [ "Orthanc" ]

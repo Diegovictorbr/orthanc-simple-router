@@ -11,22 +11,23 @@ COPY download-plugins.sh orthanc.json script.py /root/conf/
 RUN mkdir -p /root/orthanc-index/ /root/orthanc-cache/
 RUN chmod 777 /root/conf/download-plugins.sh && /root/conf/download-plugins.sh && rm /root/conf/download-plugins.sh
 
-ARG ORIGIN
 ARG DICOM_AET
+ARG ROUTING_CRITERIA
 ARG ORTHANC_ADMIN
 ARG ORTHANC_ADMIN_PASSWORD
 ARG ORTHANC_USER
 ARG ORTHANC_USER_PASSWORD
+ARG ORTHANC_DATABASE
 
-RUN sed -i "s|###ORTHANC_ADMIN###|$ORTHANC_ADMIN|g" /root/conf/script.py && \
+RUN sed -i "s|###DICOM_AET###|$DICOM_AET|g" /root/conf/script.py && \
+    sed -i "s|###ROUTING_CRITERIA###|$ROUTING_CRITERIA|g" /root/conf/script.py && \
+    sed -i "s|###ORTHANC_ADMIN###|$ORTHANC_ADMIN|g" /root/conf/script.py && \
     sed -i "s|###ORTHANC_ADMIN_PASSWORD###|$ORTHANC_ADMIN_PASSWORD|g" /root/conf/script.py && \
     sed -i "s|###ORTHANC_USER###|$ORTHANC_USER|g" /root/conf/script.py && \
     sed -i "s|###ORTHANC_USER_PASSWORD###|$ORTHANC_USER_PASSWORD|g" /root/conf/script.py && \
-    sed -i "s|###ORIGIN###|$ORIGIN|g" /root/conf/script.py && \
     sed -i "s|###DICOM_AET###|$DICOM_AET|g" /root/conf/orthanc.json && \
     sed -i "s|###ORTHANC_ADMIN###|$ORTHANC_ADMIN|g" /root/conf/orthanc.json && \
     sed -i "s|###ORTHANC_ADMIN_PASSWORD###|$ORTHANC_ADMIN_PASSWORD|g" /root/conf/orthanc.json && \
     sed -i "s|###ORTHANC_USER###|$ORTHANC_USER|g" /root/conf/orthanc.json && \
-    sed -i "s|###ORTHANC_USER_PASSWORD###|$ORTHANC_USER_PASSWORD|g" /root/conf/orthanc.json
-
-ENTRYPOINT [ "Orthanc" ]
+    sed -i "s|###ORTHANC_USER_PASSWORD###|$ORTHANC_USER_PASSWORD|g" /root/conf/orthanc.json && \
+    sed -i "s|###ORTHANC_DATABASE###|$ORTHANC_DATABASE|g" /root/conf/orthanc.json

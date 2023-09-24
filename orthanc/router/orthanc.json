@@ -4,7 +4,7 @@
   "HttpServerEnabled": true,
   "OrthancExplorerEnabled": false,
   "RemoteAccessAllowed": true,
-  "AuthenticationEnabled": true,
+  "AuthenticationEnabled": false,
   "StoreDicom": true,
   "DefaultEncoding": "Utf8",
   "StorageDirectory": "/root/orthanc-storage",
@@ -20,18 +20,6 @@
   "ConcurrentJobs": 20,
   "RegisteredUsers": {
     "###ORTHANC_ADMIN###": "###ORTHANC_ADMIN_PASSWORD###"
-  },
-  "DicomModalities": {
-    "GENERAL": [
-      "GENERAL",
-      "simple-general-writer",
-      4242
-    ],
-    "XRAY": [
-      "XRAY",
-      "xray-writer",
-      4242
-    ]
   },
   "DicomAet": "###DICOM_AET###",
   "DicomPort": 4242,

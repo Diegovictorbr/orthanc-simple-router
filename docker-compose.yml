@@ -1,9 +1,9 @@
 version: "3.8"
 
 services:
-  orthanc-router:
+  router:
     container_name: router
-    command: /root/conf/ --no-jobs
+    command: [ "/root/conf/", "--no-jobs" ]
     build:
       context: ./orthanc/router
       dockerfile: ./Dockerfile
@@ -13,53 +13,38 @@ services:
         - ORTHANC_ADMIN_PASSWORD=$ORTHANC_ADMIN_PASSWORD
     ports:
       - 4243:4242
-    depends_on:
-      - simple-general-writer
-      - xray-writer
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  simple-general-writer:
-    container_name: simple-general-writer
-    command: /root/conf/
+  generic-writer:
+    container_name: generic-writer
+    command: [ "/root/conf/" ]
+    hostname: generic-writer
     build:
       context: ./orthanc/writer
       dockerfile: ./Dockerfile
       args:
-        - DICOM_AET=GENERAL
-        - ORIGIN=simple-general-writer
+        - DICOM_AET=GENERIC
+        - ROUTING_CRITERIA=MODALITY\|NOT_IN\|CR,DX
         - ORTHANC_ADMIN=$ORTHANC_ADMIN
         - ORTHANC_ADMIN_PASSWORD=$ORTHANC_ADMIN_PASSWORD
         - ORTHANC_USER=$ORTHANC_USER
         - ORTHANC_USER_PASSWORD=$ORTHANC_USER_PASSWORD
+        - ORTHANC_DATABASE=generic-db
+    ports:
+      - 8090:80
+    volumes:
+      - generic-storage:/root/orthanc-storage:Z
     restart: unless-stopped
     depends_on:
-      - simple-router-db
+      - router
+      - generic-db
     extra_hosts:
       - "host.docker.internal:host-gateway"
-  
-  xray-writer:
-    container_name: xray-writer
-    command: /root/conf/
-    build:
-      context: ./orthanc/writer
-      dockerfile: ./Dockerfile
-      args:
-        - DICOM_AET=XRAY
-        - ORIGIN=xray-writer
-        - ORTHANC_ADMIN=$ORTHANC_ADMIN
-        - ORTHANC_ADMIN_PASSWORD=$ORTHANC_ADMIN_PASSWORD
-        - ORTHANC_USER=$ORTHANC_USER
-        - ORTHANC_USER_PASSWORD=$ORTHANC_USER_PASSWORD
-    restart: unless-stopped
-    depends_on:
-      - simple-router-db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-  
-  simple-router-db:
-    container_name: simple-router-db
+
+  generic-db:
+    container_name: generic-db
     image: mysql:5.7
     command: ["mysqld", "--default-authentication-plugin=mysql_native_password", "--log-bin-trust-function-creators=1"]
     environment:
@@ -69,11 +54,55 @@ services:
       MYSQL_ROOT_PASSWORD: 'otc'
       MYSQL_ROOT_HOST: '%'
     volumes:
-      - simple-index:/var/lib/mysql:Z
+      - generic-index:/var/lib/mysql:Z
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  
+  xray-writer:
+    container_name: xray-writer
+    command: [ "/root/conf/" ]
+    hostname: xray-writer
+    build:
+      context: ./orthanc/writer
+      dockerfile: ./Dockerfile
+      args:
+        - DICOM_AET=XRAY
+        - ROUTING_CRITERIA=MODALITY\|IN\|CR,DX
+        - ORTHANC_ADMIN=$ORTHANC_ADMIN
+        - ORTHANC_ADMIN_PASSWORD=$ORTHANC_ADMIN_PASSWORD
+        - ORTHANC_USER=$ORTHANC_USER
+        - ORTHANC_USER_PASSWORD=$ORTHANC_USER_PASSWORD
+        - ORTHANC_DATABASE=xray-db
+    ports:
+      - 8091:80
+    volumes:
+      - xray-storage:/root/orthanc-storage:Z
+    restart: unless-stopped
+    depends_on:
+      - router
+      - xray-db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  xray-db:
+    container_name: xray-db
+    image: mysql:5.7
+    command: ["mysqld", "--default-authentication-plugin=mysql_native_password", "--log-bin-trust-function-creators=1"]
+    environment:
+      MYSQL_DATABASE: 'otc'
+      MYSQL_USER: 'otc'
+      MYSQL_PASSWORD: 'otc'
+      MYSQL_ROOT_PASSWORD: 'otc'
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - xray-index:/var/lib/mysql:Z
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  simple-storage:
-  simple-index:
+  generic-storage:
+  xray-storage:
+  generic-index:
+  xray-index:
